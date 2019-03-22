@@ -1,0 +1,434 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package drosario_8_2darraygameupdt;
+
+import java.util.Scanner;
+
+/**
+ *
+ * @author daniel
+ */
+public class DRosario_8_2DArraygame {
+
+    public static void main(String[] args) {
+
+        Player rick = new Player(5, 5, 3);
+        Enemy bad = new Enemy(7, 7);
+        Gold coin = new Gold(8, 11);
+        Gold coin2 = new Gold(9, 2);
+        Gold coin3 = new Gold(2, 3);
+        Wall box = new Wall(9, 5);
+        Wall box2 = new Wall(9, 4);
+        Wall box3 = new Wall(9, 6);
+        Trap landmine = new Trap(3, 3);
+        Trap landmine2 = new Trap(6, 7);
+        Trap landmine3 = new Trap(9, 1);
+        System.out.println("Welcome to a barren land you wake up in a strange land with a enemy that on your radar appears as a B");
+        System.out.println("You tune your radar to pick yourself up on the land P along with the enemy and his movements");
+        System.out.println("Around the island there are landmines but your scanner is to weak to pick them up clearly but can faintly detect them");
+        System.out.println("[RADER] LANDSCAPE/LANDMINES DETECTED | LANDSCAPE DISPLAYED AS .| LANDMINES DISPLAYED AS ,");
+        System.out.println("[RADAR] USE N,E,S,W TO NAVIGATE LIKE A COMPASS AND USE COMBONATIONS SUCH AS NE TO MOVE DIAGNOL");
+
+        Scanner userinput = new Scanner(System.in); // Importing the scanner
+        String Playermovement;
+        boolean inGame = true;
+        while (inGame) {
+            Playermovement = userinput.nextLine();
+
+            char[][] landscape = new char[12][12];
+
+            for (int i = 0; i < landscape[0].length; i++) {
+                for (int j = 0; j < landscape[1].length; j++) {
+                    landscape[i][j] = '.';
+                }
+            }
+              if (rick.getHealth() <= 0) {
+                  System.out.println("Your Wounds are fatal life support [Failure] ");
+              
+                  
+              }
+              
+
+            if (Playermovement.contains("E")) { // Declares when enter in d the character moves right by one or the value increases by 1.
+
+                rick.moveRight();
+
+            }
+
+            if (Playermovement.contains("W")) { // declares when i put A make it go Left
+
+                rick.moveLeft(); // makes move left possible
+
+            }
+            if (Playermovement.contains("N")) { // makes it when w clicked go up
+                rick.moveUp();// makes it go up
+
+            }
+            if (Playermovement.contains("S")) { // you get the point
+
+                rick.moveDown();
+
+            }
+
+            if ((bad.getX() == rick.getX()) && (bad.getY() == rick.getY())) {
+                rick.Enemyhit(bad);
+                System.out.println("The Enemy strikes you dealing 1 DMG");
+
+            }
+            if (rick.getHealth() <= 0) {
+                
+                inGame = false;
+                System.out.println("You have been slain GAME OVER");
+                System.out.println(" ______________");
+                System.out.println("|              |");
+                System.out.println("| R    I    P  | ");
+                System.out.println("|              |");
+                System.out.println("|   Dr Rick    |");
+                System.out.println("|              |");
+                System.out.println("|  1971-2019   |");
+                System.out.println("|              |");
+                System.out.println("| may he rest  |");
+                System.out.println("|______________|");
+            }
+            if (rick.getScore() >= 3) {
+                inGame = false;
+                System.out.println("  _______________________________");
+                System.out.println(" |                               |");
+                System.out.println(" | Dr Rick makes a safe recovery |");
+                System.out.println(" | After crashing on a strange   |");
+                System.out.println(" |         island                |");
+                System.out.println(" |                               |");
+                System.out.println(" |BREAKING NEWS: island discoverd|");
+                System.out.println(" | _____________________________ |");
+                System.out.println(" | |                           | |");
+                System.out.println(" | |                           | |");
+        
+
+            }
+
+            if ((landmine.getX() == rick.getX()) && (landmine.getY() == rick.getY())) {
+                rick.Traptrigger(landmine);
+                System.out.println("You have Stepped on a Landmine Dealing 2 DMG");
+                System.out.println("Your leg is damaged from the explosion");
+
+            }
+            if ((landmine2.getX() == rick.getX()) && (landmine2.getY() == rick.getY())) {
+                rick.Traptrigger(landmine2);
+                System.out.println("You have Stepped on a Landmine Dealing 2 DMG");
+                System.out.println("Your ears start ringing from the point blank blast");
+            }
+            if ((landmine3.getX() == rick.getX()) && (landmine3.getY() == rick.getY())) {
+                rick.Traptrigger(landmine3);
+                System.out.println("You have Stepped on a Landmine Dealing 2 DMG");
+                System.out.println("You feel the shrapnel from the landmine strike you");
+            }
+            if ((coin.getX() == rick.getX()) && (coin.getY() == rick.getY())) {
+                rick.Goldcollect(coin);
+                System.out.println("You have Collected a Gold Coin");
+                System.out.println("This has a nice glow to it");
+                coin.symbol = '.';
+            }
+            if ((coin2.getX() == rick.getX()) && (coin2.getY() == rick.getY())) {
+                rick.Goldcollect(coin2);
+                System.out.println("You have Collected a Gold Coin");
+                System.out.println("This one is extra shiney");
+                coin2.symbol = '.';
+            }
+            if ((coin3.getX() == rick.getX()) && (coin3.getY() == rick.getY())) {
+                rick.Goldcollect(coin3);
+                System.out.println("You have Collected a Gold Coin");
+                System.out.println("1 more down");
+                coin3.symbol = '.';
+            }
+            if ((box.getX() == rick.getX()) && (box.getY() == rick.getY())) {
+                rick.Wallhit(box);
+                System.out.println("You have Ran into a wall");
+                System.out.println("i have to watch out");
+            }
+            if ((box2.getX() == rick.getX()) && (box2.getY() == rick.getY())) {
+                rick.Wallhit(box2);
+                System.out.println("You have Ran into a wall");
+                System.out.println("I think its better to not walk into this");
+            }
+            if ((box3.getX() == rick.getX()) && (box3.getY() == rick.getY())) {
+                rick.Wallhit(box3);
+                System.out.println("You have Ran into a wall");
+                System.out.println("i should not hit ");
+            }
+
+            landscape[rick.getY()][rick.getX()] = rick.getSymbol();
+            bad.chase(rick);
+
+            landscape[bad.getY()][bad.getX()] = bad.getSymbol();
+
+            landscape[landmine.getY()][landmine.getX()] = landmine.getSymbol();
+            landscape[landmine2.getY()][landmine2.getX()] = landmine2.getSymbol();
+            landscape[landmine3.getY()][landmine3.getX()] = landmine3.getSymbol();
+
+            landscape[coin.getY()][coin.getX()] = coin.getSymbol();
+            landscape[coin2.getY()][coin2.getX()] = coin2.getSymbol();
+            landscape[coin3.getY()][coin3.getX()] = coin3.getSymbol();
+            landscape[box.getY()][box.getX()] = box.getSymbol();
+            landscape[box2.getY()][box2.getX()] = box2.getSymbol();
+            landscape[box3.getY()][box3.getX()] = box3.getSymbol();
+
+            for (int i = 0; i < landscape[0].length; i++) {
+                for (int j = 0; j < landscape[1].length; j++) {
+                    System.out.print(landscape[i][j]);
+                    landscape[bad.getY()][bad.getX()] = bad.getSymbol();
+                }
+                System.out.println("|");
+
+            }
+        }
+    }
+}
+
+class Player extends Beings { // delcare player
+
+    int health, score, level; // player varibles
+    char symbol = 'P';
+
+    public Player(int x, int y, int health) {
+           super (x,y);
+           this.x = 1;
+        this.health = 3;
+        this.score = 0;
+    }
+
+    public int getHealth() {
+        return health; // health value
+    }
+
+    public void setHealth(int health) {
+        this.health = health; // set health
+    }
+
+    public int getScore() {
+        return score; // get the score
+    }
+
+    public void setScore(int score) {
+        this.score = score; // set thy score
+    }
+    public char getSymbol() { // gets my guys symbol
+        return symbol;
+    }
+
+    public void setSymbol(char symbol) { // makes it so i can see my guy Important
+        this.symbol = symbol;
+    }
+
+    public void Enemyhit(Enemy e) {
+        if (e.getX() == this.x && e.getY() == this.y) {
+            this.health = this.health - 1;
+            System.out.println("your health is " + this.health);
+        }
+    }
+
+    public void Traptrigger(Trap t) {
+        if (t.getX() == this.x && t.getY() == this.y) {
+            this.health = this.health - 2;
+            System.out.println("your health is " + this.health);
+        }
+    }
+
+    public void Goldcollect(Gold g) {
+        if (g.getX() == this.x && g.getY() == this.y) {
+            this.score = this.score + 1;
+            System.out.println("your score is " + this.score);
+        }
+    }
+
+    public void Wallhit(Wall w) {
+        if (w.getX() == this.x && w.getY() == this.y) {
+            this.x = this.x - 2;
+        } else if (w.getX() > this.x) {
+
+        }
+    }
+
+}
+
+
+
+class Enemy extends Beings { // delcare bad guy
+
+    
+    char symbol = 'B';
+
+    public Enemy (int x, int y) {
+       super (x,y);
+        
+    }
+    public void chase(Player p) { // chase the player and make him ded
+        if (p.getX() < this.x) {
+            this.moveLeft(); // get the players x and then move enemys x
+            System.out.println("you see the enemy blitzing from the right");
+        } else if (p.getX() > this.x) {// follows players x right
+            this.moveRight();
+            System.out.println("you see the enemy going to flank you from the left");
+        } else if (p.getY() < this.y) { // follows play Y Up
+            this.moveUp();
+            System.out.println("you see the enemy rush up from behind");
+        } else if (p.getY() > this.y) { // follows player Y down
+            this.moveDown();
+            System.out.println("You see the enemy charging you from the north");
+
+        }
+    }
+    public char getSymbol() { // gets my guys symbol
+        return symbol;
+    }
+
+    public void setSymbol(char symbol) {
+        this.symbol = symbol;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+class Trap extends Interactives {
+
+    
+    char symbol = ',';
+
+    public Trap(int x, int y) {
+        super(x,y);
+
+    }
+    public char getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(char symbol) {
+        this.symbol = symbol;
+    }
+}
+
+class Gold extends Interactives {
+
+    
+    char symbol = '@';
+
+    public Gold(int x, int y) {
+       super(x,y);
+
+    }
+
+    public char getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(char symbol) {
+        this.symbol = symbol;
+    }
+
+}
+
+class Wall extends Interactives {
+
+    
+    char symbol = '#';
+
+    public Wall(int x, int y) {
+        super(x,y);
+        
+
+    }
+
+
+    public char getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(char symbol) {
+        this.symbol = symbol;
+    }
+
+}
+
+
+
+
+  
+      abstract class Beings {
+           int x, y;
+           
+      public Beings(int x, int y) {
+          this.x = x;
+          this.y = y;
+      }
+    
+    public int getX() { // retrive x value
+        return x;
+    }
+
+    public void setX(int x) { // sets current y value
+        this.x = x;
+    }
+
+    public void moveLeft() { // move it left
+        this.x = this.x - 1;
+    }
+
+    public void moveRight() { // move it right
+        this.x = this.x + 1;
+    }
+
+    public void moveUp() { // move up
+        this.y = this.y - 1;
+    }
+
+    public void moveDown() { // move down
+        this.y = this.y + 1;
+    }
+
+    public int getY() { // retrives y value
+        return y;
+    }
+
+    public void setY(int y) { // sets current y value
+        this.y = y;
+    }
+
+   
+          
+          
+          
+           }
+
+ abstract class Interactives {
+     
+     int x,y;
+        public Interactives(int x, int y) {
+   this.x = x;
+   this.y = y;
+     }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+}
