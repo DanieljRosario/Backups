@@ -1,0 +1,2294 @@
+/*
+ * This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+ */
+package javafxgame;
+
+import com.sun.javafx.sg.prism.NGShape;
+import java.util.ArrayList;
+import javafx.animation.AnimationTimer;
+import javafx.application.Application;
+import static javafx.application.Application.launch;
+import javafx.event.EventHandler;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
+import javafx.scene.text.Text;
+import javafx.event.ActionEvent;
+import javafx.scene.shape.Shape;
+import javafx.event.Event;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
+import javafxgame.JavaFXGame.Enemy;
+import javax.print.PrintException;
+
+/**
+ * For more information see:
+ * http://stackoverflow.com/questions/21331519/how-to-get-smooth-animation-with-keypress-event-in-javafx
+ * http://docs.oracle.com/javafx/2/scenegraph/jfxpub-scenegraph.htm
+ * http://stackoverflow.com/questions/15013913/checking-collision-of-shapes-with-javafx
+ * https://gamedevelopment.tutsplus.com/tutorials/introduction-to-javafx-for-game-development--cms-23835
+ */
+//https://stackoverflow.com/questions/26625362/javafx-and-mediaexception-unknown-could-not-create-player
+public class JavaFXGame extends Application {
+
+    ArrayList<Rectangle> badblockz = new ArrayList();
+    ArrayList<wall> bricks = new ArrayList();
+    ArrayList<wall2> bricks2 = new ArrayList();
+    ArrayList<wall3> bricks3 = new ArrayList();
+    ArrayList<wall4> bricks4 = new ArrayList();
+    ArrayList<Enemy> enemys = new ArrayList();
+    ArrayList<Enemy2> enemys2 = new ArrayList();
+    ArrayList<Enemy3> enemys3 = new ArrayList();
+    ArrayList<Enemy4> enemys4 = new ArrayList();
+    ArrayList<Gold> coins = new ArrayList();
+    ArrayList<String> input = new ArrayList<String>();
+    Rectangle rect;
+    Rectangle box;
+    Canvas canvas;
+    ImageView IV, IV2, IV3, IV4, IV5, CP, Img2, jif, jif2, blade;
+    GraphicsContext gc;
+    //  Sprite briefcase;
+    Image Noice;
+    Player knight;
+    Enemy Skeleton, SK2, SK3;
+    Enemy2 Z1, Z2, Z3, Z4;
+    Enemy3 C1, C2, C3;
+    Enemy4 D1, D2, D3;
+
+    MediaPlayer beat, oof;
+    Media media, alert;
+    AudioClip audioClip;
+    Gold money, money2, money3;
+    Sword starter;
+    Detection spotted;
+    Detection2 spotted2;
+    Detection3 spotted3;
+    LinearGradient lg1, lg2;
+    TESTING test;
+    Stop[] stops = new Stop[]{new Stop(0, Color.BLACK), new Stop(1, Color.RED)};
+    Scene theScene;
+    Group root, root2, root3, root4;
+    DartTrap Dart1;
+    Dart projectile;
+    Testing2 omju;
+    Testing3 snake;
+    int room = 1;
+    int dartvalue = 0;
+    int score = 0;
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        // ffmpeg -i Funkybeat.mp3 Funkybeat.wav  (how to convert mp3 into a wav to play audio.
+        media = new Media("file:///home/daniel/NetBeansProjects/JavaFXGame/src/Papers.wav"); //replace /Movies/test.mp3 with your file in src
+        alert = new Media("file:///home/daniel/NetBeansProjects/JavaFXGame/src/Alert.wav");
+        beat = new MediaPlayer(media);
+        oof = new MediaPlayer(alert);
+        beat.play();
+        final URL resource = getClass().getResource("Funkybeat.mp3");
+        System.out.println("Now playing: Papers Please");
+
+        //  audioClip = new AudioClip(resource.toExternalForm());
+        primaryStage.setTitle("box check");
+
+        canvas = new Canvas(1000, 1000);
+        // primaryStage.setScene(theScene);
+
+        gc = canvas.getGraphicsContext2D();
+
+        gc.setFill(Color.RED);
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(2);
+        Font theFont = Font.font("Arial", FontWeight.BOLD, 36);
+        gc.setFont(theFont);
+        gc.fillText("Now playing: Retro city rampage", 20, 50);
+        gc.strokeText("Now playing: Retro city rampage", 20, 50);
+        lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
+
+        // Noice = new Image("file:src/Dungeon.jpg");
+        // IV = new ImageView(new Image("file:src/RoboKnight.png"));
+        // IV.setX(50);
+        //  IV.setY(50);
+        //  IV.setFitHeight(70);
+        // IV.setFitWidth(60);
+        IV2 = new ImageView(new Image("file:src/Room2.jpg"));
+        IV2.setX(30);
+        IV2.setY(30);
+        IV2.setFitHeight(canvas.getHeight());
+        IV2.setFitWidth(canvas.getWidth());
+
+        jif = new ImageView(new Image("file:src/fire.gif"));
+        jif.setX(830);
+        jif.setY(515);
+        jif.setFitHeight(180);
+        jif.setFitWidth(140);
+        knight = new Player(800, 900);
+        jif2 = new ImageView(new Image("file:src/fire.gif"));
+        jif2.setX(830);
+        jif2.setY(375);
+        jif2.setFitHeight(180);
+        jif2.setFitWidth(140);
+
+        Img2 = new ImageView(new Image("file:src/Room3.jpg"));
+
+        IV4 = new ImageView(new Image("file:src/Room4.jpg"));
+
+        IV5 = new ImageView(new Image("file:src/Room5.jpg"));
+        // ----------------------------------------------------------------------------
+        SK2 = new Enemy(60, 600, 60, 60);
+
+        SK3 = new Enemy(500, 60, 60, 60);
+
+        Skeleton = new Enemy(100, 80, 30, 50);
+
+        enemys.add(Skeleton);
+        Skeleton.setFill(Color.RED);
+        enemys.add(SK2);
+        SK2.setFill(Color.RED);
+        enemys.add(SK3);
+        SK3.setFill(Color.RED);
+        // =========================================================
+
+        //------------------------------------------------------------------------------------------------------
+        money = new Gold(400, 500, 20, 20);
+        money.setFill(Color.GOLD);
+        coins.add(money);
+
+        money2 = new Gold(700, 480, 20, 20);
+        money.setFill(Color.GOLD);
+        coins.add(money2);
+        money3 = new Gold(600, 480, 20, 20);
+        money3.setFill(Color.GOLD);
+        coins.add(money3);
+        //-----------------------------------------------------------------------------------------------------
+
+        Dart1 = new DartTrap(600, 900, 30, 30); // 1st is X cord 2nd in Y cord 3rd is Length and 4th is Height
+        Dart1.setFill(Color.RED);
+
+        projectile = new Dart(100, 200, 20, 40);
+        projectile.setFill(Color.AQUA);
+
+        knight.setFill(Color.RED);
+
+        root = new Group();
+        root2 = new Group();
+        root3 = new Group();
+        root4 = new Group();
+        theScene = new Scene(root);
+
+        primaryStage.setScene(theScene);
+
+        root.getChildren().add(canvas);
+
+        starter = new Sword(250, 250, 20, 45);
+        //  starter.setFill(Color.DARKMAGENTA);
+        starter.setFill(lg1);
+
+        box = new Rectangle(300, 300, 23, 23);
+        box.setFill(lg1);
+
+        test = new TESTING(830, 900, 30, 30); //   --------------------------------------LVL1 PORTAL--------------------------------------------------
+        box.setFill(Color.BLUE);
+
+        omju = new Testing2(450, 800, 30, 30); //   --------------------------------------LVL1 PORTAL--------------------------------------------------
+        box.setFill(Color.BLUE);
+
+        snake = new Testing3(-550, 560, 30, 30); //   --------------------------------------LVL1 PORTAL--------------------------------------------------
+        box.setFill(Color.BLUE);
+
+        rect = new Rectangle(150, 50, 25, 25);
+        rect.setFill(Color.BLUE);
+
+        spotted = new Detection(100, 100, 20, 20);
+        rect.setFill(Color.CHARTREUSE);
+
+      //  spotted2 = new Detection2(100, 100, 20, 20);
+     //   System.out.println(spotted2.getWidth()); 
+    //    System.out.println(spotted2.getHeight()); 
+        
+        rect.setFill(Color.CHARTREUSE);
+
+        for (int i = 0; i < canvas.getWidth(); i += 90) {
+            bricks.add(new wall(990, i, 20, 90, Color.CHARTREUSE));
+
+            bricks.add(new wall(520, 175, 30, 250, Color.DEEPPINK));
+            bricks.add(new wall(240, 545, 350, 450, Color.CHARTREUSE));// 1st is X cord 2nd in Y cord 3rd is Length and 4th is Height
+            bricks.add(new wall(695, 690, 165, 165, Color.CHARTREUSE));
+            bricks.add(new wall(620, 710, 100, 140, Color.RED));
+            bricks.add(new wall(790, 650, 100, 90, Color.RED));
+            bricks.add(new wall(780, 802, 100, 90, Color.RED));
+            bricks.add(new wall(540, 226, 460, 200, Color.CHARTREUSE));
+            bricks.add(new wall(156, 650, 140, 180, Color.RED));
+            bricks.add(new wall(120, 175, 30, 250, Color.DEEPPINK));
+            bricks.add(new wall(120, 175, 400, 20, Color.DEEPPINK));
+            bricks.add(new wall(120, 405, 400, 20, Color.DEEPPINK));
+            bricks.add(new wall(820, 90, 120, 110, Color.DEEPPINK));
+        }
+        for (int i = 0; i < canvas.getWidth(); i += 90) {
+            bricks2.add(new wall2(822, 410, 20, 275, Color.RED));
+            bricks2.add(new wall2(819, 350, 138, 60, Color.DEEPPINK));//
+            bricks2.add(new wall2(819, 685, 138, 60, Color.DEEPPINK));//
+            bricks2.add(new wall2(545, 120, 140, 620, Color.RED)); // 1st is X cord 2nd in Y cord 3rd is Length and 4th is Height
+            bricks2.add(new wall2(195, 211, 350, 43, Color.DEEPPINK));
+            bricks2.add(new wall2(140, 413, 420, 60, Color.DEEPPINK));
+            bricks2.add(new wall2(306, 253, 55, 40, Color.CHARTREUSE));
+            bricks2.add(new wall2(660, 203, 155, 40, Color.CHARTREUSE));
+            bricks2.add(new wall2(270, 683, 150, 600, Color.DEEPPINK));
+            bricks2.add(new wall2(340, 683, 350, 60, Color.GREEN));
+            bricks2.add(new wall2(130, 788, 150, 60, Color.GREEN));
+
+        }
+        for (int i = 0; i < canvas.getWidth(); i += 90) {
+            bricks3.add(new wall3(340, 749, 80, 200, Color.DEEPPINK));
+            bricks3.add(new wall3(155, 755, 200, 40, Color.RED));
+            bricks3.add(new wall3(585, 570, 80, 450, Color.DEEPPINK));
+            bricks3.add(new wall3(665, 570, 220, 70, Color.RED));
+            bricks3.add(new wall3(778, 628, 40, 160, Color.AQUA));
+            bricks3.add(new wall3(355, 386, 450, 60, Color.AQUA));
+            bricks3.add(new wall3(353, 379, 76, 260, Color.RED));
+            bricks3.add(new wall3(132, 570, 300, 60, Color.DEEPPINK)); // 1st is X cord 2nd in Y cord 3rd is Length and 4th is Height
+            bricks3.add(new wall3(132, 380, 55, 250, Color.AQUA));
+            bricks3.add(new wall3(149, 285, 40, 105, Color.RED));
+            bricks3.add(new wall3(189, 217, 40, 105, Color.GREEN));
+            bricks3.add(new wall3(470, 27, 45, 405, Color.GREEN));
+            bricks3.add(new wall3(745, 179, 58, 205, Color.GREEN));
+        }
+        for (int i = 0; i < canvas.getWidth(); i += 90) {
+            bricks4.add(new wall4(389, 468, 35, 500, Color.DEEPPINK));
+            bricks4.add(new wall4(679, 928, 35, 30, Color.RED));
+            bricks4.add(new wall4(679, 714, 35, 120, Color.RED));
+            bricks4.add(new wall4(599, 243, 35, 480, Color.DEEPPINK));
+            bricks4.add(new wall4(603, 688, 250, 35, Color.RED));
+            bricks4.add(new wall4(823, 467, 32, 240, Color.DEEPPINK));
+            bricks4.add(new wall4(38, 312, 120, 35, Color.RED));
+            bricks4.add(new wall4(138, 247, 500, 35, Color.RED));
+            bricks4.add(new wall4(138, 247, 30, 95, Color.DEEPPINK));
+            bricks4.add(new wall4(178, 462, 250, 35, Color.AQUA));
+            bricks4.add(new wall4(178, 462, 35, 375, Color.RED));
+            bricks4.add(new wall4(422, 694, 98, 32, Color.RED));// 1st is X cord 2nd in Y cord 3rd is Length and 4th is Height
+            bricks4.add(new wall4(500, 500, 25, 15, Color.GREEN));
+            bricks4.add(new wall4(434, 125, 28, 120, Color.GREEN));
+
+        }
+
+        badblockz.add(rect);
+
+        AnimationTimer timer = new MyTimer();
+
+        theScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                // Skeleton.chase(knight);
+                spotted.follow(Skeleton);
+
+                String code = event.getCode().toString();
+                //    input.remove( code );
+                if (event.getCode() == KeyCode.RIGHT) { // don't use toString here!!!
+                    knight.moveRight();
+                    starter.BladeRight(knight);
+                    box.setFill(Color.TRANSPARENT);
+                    //Detected(knight);
+                    Switch(knight);
+                    DartDetect(knight);
+                    Switch2(knight);
+                    Switch3(knight);
+                    // IV = new ImageView(new Image("file:src/Right1.png"));
+                    checkBounds(box);
+
+                    for (Enemy e : enemys) {
+                        e.Detected(knight);
+                    }
+                    for (Enemy2 c : enemys2) {
+                        c.DetectedB(knight);
+                    }
+                    for (Enemy3 d : enemys3) {
+                        d.DetectedC(knight);
+                    }
+                    for (Enemy4 e : enemys4) {
+                        e.DetectedD(knight);
+                    }
+                } else if (event.getCode() == KeyCode.LEFT) {
+                    knight.moveLeft();
+                    //  System.out.println("going left");
+                    //     System.out.println("my x " + knight.getX());
+                    starter.BladeLeft(knight);
+                    //Detected(knight);
+                    Switch(knight);
+                    DartDetect(knight);
+                    Switch2(knight);
+                    Switch3(knight);
+//                    box.setX(box.getX() - 7);
+//                    box.setFill(Color.TRANSPARENT);
+//                    checkBounds(box);
+                    for (Enemy e : enemys) {
+                        e.Detected(knight);
+                    }
+                    for (Enemy2 c : enemys2) {
+                        c.DetectedB(knight);
+                    }
+                    for (Enemy3 d : enemys3) {
+                        d.DetectedC(knight);
+                    }
+                    for (Enemy4 e : enemys4) {
+                        e.DetectedD(knight);
+                    }
+                } else if (event.getCode() == KeyCode.UP) {
+                    knight.moveUp();
+                    Goldhit(knight);
+                    starter.BladeUp(knight);
+                    //Detected(knight);
+                    Switch(knight);
+                    Switch2(knight);
+                    DartDetect(knight);
+                    Switch3(knight);
+//                    box.setY(box.getY() - 7);
+//                    box.setFill(Color.TRANSPARENT);
+//                    checkBounds(box);
+                    for (Enemy e : enemys) {
+                        e.Detected(knight);
+                    }
+                    for (Enemy2 c : enemys2) {
+                        c.DetectedB(knight);
+                    }
+                    for (Enemy3 d : enemys3) {
+                        d.DetectedC(knight);
+                    }
+                    for (Enemy4 e : enemys4) {
+                        e.DetectedD(knight);
+                    }
+                } else if (event.getCode() == KeyCode.DOWN) {
+                    knight.moveDown();
+                    Goldhit(knight);
+                    starter.BladeDown(knight);
+                    //Detected(knight);
+                    Switch(knight);
+                    Switch2(knight);
+                    Switch3(knight);
+                    DartDetect(knight);
+                    
+                    
+                    for (Enemy e : enemys) {
+                        e.Detected(knight);
+                    }
+                    for (Enemy2 c : enemys2) {
+                        c.DetectedB(knight);
+                    }
+                    for (Enemy3 d : enemys3) {
+                        d.DetectedC(knight);
+                    }
+                    for (Enemy4 e : enemys4) {
+                        e.DetectedD(knight);
+                    }
+                }
+
+            }
+        });
+
+//        theScene.setOnKeyReleased(new EventHandler<KeyEvent>() {
+//            @Override
+//            public void handle(KeyEvent event) {
+//                if (event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT) {
+//                    // rectangleVelocity.set(0);
+//                }
+//            }
+//        });
+        //try disabling canvas --- notice the difference
+        // root.getChildren().add(IV);
+        root.getChildren().add(IV2);
+        root.getChildren().add(rect);
+        // root.getChildren().add(money);
+        root.getChildren().add(starter);
+        root.getChildren().add(starter.Pics);
+        // root.getChildren().add(Skeleton.photo);
+        // root.getChildren().add(Skeleton);
+        //root.getChildren().add(SK2);
+        //  root.getChildren().add(SK3);
+
+        root.getChildren().add(knight.picture);
+        root.getChildren().add(test);
+        root.getChildren().add(Dart1);
+        root.getChildren().add(projectile);
+        root.getChildren().add(money.cpicture);
+        root.getChildren().add(money2.cpicture);
+        root.getChildren().add(money3.cpicture);
+
+        for (wall w : bricks) {
+            root.getChildren().add(w);
+        }
+        //   for (Enemy e:enemys){
+        //       root.getChildren().add(e.spotted);
+        for (Gold g : coins) {
+            root.getChildren().add(g);
+        }
+        //}
+        for (Enemy e : enemys) {
+            root.getChildren().add(e);
+        }
+
+        //    for (wall2 b : bricks2) {
+        //       root2.getChildren().add(b);
+        // }
+        root.getChildren().add(knight);
+        // root.getChildren().add(spotted);
+
+        timer.start();
+        primaryStage.show();
+        //  audioClip.play();
+        //root.getChildren().add(canvas);
+
+    }
+
+    /**
+     * @param args the command line arguments
+     *
+     * The same as before main just calls the args described above
+     */
+    ///  vvvvvvvvvvvv   MAIN vvvvvvvvvvv
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    //// ^^^^^^^^^^^  MAIN ^^^^^^^^^^^^^
+    // we create our time here --- to animate
+    private class MyTimer extends AnimationTimer {
+
+        boolean movedown = true;
+
+        /// handle is defined by the abstract parent class -- it must be redined
+        /// this is what happens again and again until stop()
+        @Override
+        public void handle(long now) {
+            knight.CoinCheck(coins);
+            doHandle();
+            /// notice doHandle()  is what happens again and again it's defined below
+
+        }
+
+        private void doHandle() {
+
+        }
+    }
+
+    private void checkBounds(Rectangle box) {
+
+        boolean collisionDetected = false;
+
+    }
+
+    private void Goldhit(Player knight) {
+        boolean Goldcheck = false;
+        if (knight.getBoundsInParent().intersects(money.getBoundsInParent())) {
+            System.out.println("I got the coin");
+            Goldcheck = true;
+        }
+        if (Goldcheck) {
+            money.setFill(Color.RED);
+            money.setFill(Color.TRANSPARENT);
+            money.setX(+1000);
+        }
+    }
+
+    //-------------------------------------------------------------------------------------------- LEVEL SWITCH 1
+    private void Switch(Player knight) {
+        boolean levelswitch = false;
+        if (knight.getBoundsInParent().intersects(test.getBoundsInParent())) {
+            System.out.println("NEW LEVEL YES 1");
+            levelswitch = true;
+        }
+        if (levelswitch) {
+            theScene.setRoot(root2);
+            test.setX(+1000);
+            Skeleton.setX(+10000);
+            Skeleton.setY(+10000);
+            bricks.removeAll(bricks);
+            enemys.removeAll(enemys);
+            knight.setX(+510);
+            knight.setY(+880);
+
+            Z1 = new Enemy2(360, 550, 60, 60);
+            enemys2.add(Z1);
+            Z1.setFill(Color.RED);
+            Z2 = new Enemy2(100, 160, 60, 60);
+            enemys2.add(Z2);
+            Z2.setFill(Color.RED);
+            Z3 = new Enemy2(700, 80, 30, 50);
+            enemys2.add(Z3);
+            Z3.setFill(Color.RED);
+            Dart1.setX(1250);
+  room++;
+            Img2.setFitHeight(canvas.getHeight());
+            Img2.setFitWidth(canvas.getWidth());
+            root2.getChildren().add(Img2);
+            root2.getChildren().add(jif);
+            root2.getChildren().add(jif2);
+            root2.getChildren().add(omju);
+
+            root2.getChildren().add(knight.picture);
+            root2.getChildren().add(starter);
+            for (wall2 b : bricks2) {
+                root2.getChildren().add(b);
+            }
+            //  for (Enemy2 c : enemys2) {
+            //    root2.getChildren().add(c.spotted2);
+           // }
+              for (Enemy2 c : enemys2) {
+                root2.getChildren().add(c);
+            }
+          // spotted2.setFill(Color.AQUA);
+
+            root2.getChildren().add(spotted2);
+
+          
+            System.out.println(room);
+            //System.out.println(Z1.getX());
+            /// System.out.println(spotted2);
+
+        }
+    }
+
+    private void Switch2(Player knight) {
+        boolean levelswitch2 = false;
+        if (knight.getBoundsInParent().intersects(omju.getBoundsInParent())) {
+            System.out.println("NEW LEVEL 2 YES");
+            levelswitch2 = true;
+        }
+        if (levelswitch2) {
+
+            theScene.setRoot(root3);
+            omju.setX(+1500);
+            IV4.setFitHeight(canvas.getHeight());
+            IV4.setFitWidth(canvas.getWidth());
+            root3.getChildren().add(IV4);
+            root3.getChildren().add(snake);
+
+            enemys2.removeAll(enemys2);
+            bricks2.removeAll(bricks2);
+            C1 = new Enemy3(280, 670, 60, 60);
+            enemys3.add(C1);
+            C1.setFill(Color.RED);
+            C2 = new Enemy3(100, 160, 60, 60);
+            enemys3.add(C2);
+            C2.setFill(Color.RED);
+            C3 = new Enemy3(700, 80, 30, 50);
+            enemys3.add(C3);
+            C3.setFill(Color.RED);
+
+            for (wall3 b : bricks3) {
+                root3.getChildren().add(b);
+
+            }
+            for (Enemy3 c : enemys3) {
+                root3.getChildren().add(c);
+            }
+            root3.getChildren().add(knight.picture);
+            snake.setX(snake.getX() + 1000);
+            System.out.println(room);
+            room++;
+
+        }
+    }
+
+    private void Switch3(Player knight) {
+        boolean levelswitch3 = false;
+        if (knight.getBoundsInParent().intersects(snake.getBoundsInParent())) {
+            System.out.println("NEW LEVEL 3 YES");
+            levelswitch3 = true;
+        }
+        if (levelswitch3) {
+            enemys3.removeAll(enemys3);
+            theScene.setRoot(root4);
+            snake.setX(+1500);
+            D1 = new Enemy4(280, 670, 60, 60);
+            enemys4.add(D1);
+            D1.setFill(Color.RED);
+            D2 = new Enemy4(100, 160, 60, 60);
+            enemys4.add(D2);
+            D2.setFill(Color.RED);
+            D3 = new Enemy4(700, 80, 30, 50);
+            enemys4.add(D3);
+            D3.setFill(Color.RED);
+
+            IV5.setFitHeight(canvas.getHeight());
+            IV5.setFitWidth(canvas.getWidth());
+            root4.getChildren().add(IV5);
+            root4.getChildren().add(knight.picture);
+            for (wall4 b : bricks4) {
+                root4.getChildren().add(b);
+            }
+            for (Enemy4 d : enemys4) {
+                root4.getChildren().add(d);
+            }
+            bricks3.removeAll(bricks3);
+            room++;
+
+        }
+    }
+    //-------------------------------------------------------------------------------------------- LEVEL SWITCH 1
+
+    //-------------------------------------------------------------------------------------------- DART METHOD
+    private void DartDetect(Player knight) {
+        boolean Dartaway = false;
+        if (knight.getBoundsInParent().intersects(Dart1.getBoundsInParent())) {
+            System.out.println("FA CHUNK");
+            Dartaway = true;
+            if (projectile.moved == 1) {
+                projectile.setY(
+                        Dart1.getY() - 30);
+                projectile.setX(Dart1.getX());
+                dartvalue++;
+            }
+//
+        }
+        if (Dartaway) {
+            if (dartvalue == 1);
+
+            projectile.DartDown();
+            System.out.println(projectile.getY());
+            System.out.println(projectile.getX());
+            System.out.println("Whoosh");
+        }
+    }
+
+    //-------------------------------------------------------------------------------------------- DART METHOD
+    public void Level1(Player knight) {
+        boolean Level1 = true;
+        if (room > 1) {
+            Level1 = false;
+
+        }
+
+        if (Level1 = false) {
+            System.out.println("THIS IS A TEST THIS IS A TEST");
+            Skeleton.setX(+1000);
+            Skeleton.setY(+1000);
+
+        }
+
+    }
+
+    abstract class Humanoid extends Rectangle {
+
+        int x, y;
+
+        public Humanoid(int x, int y) {
+            this.x = x;
+            this.y = y;
+            //    }
+
+            //public int getX() { // retrive x value
+            //   return x;
+        }
+
+        public void setX(int x) { // sets current y value
+            this.x = x;
+        }
+
+        public void moveLeft() { // move it left
+            this.x = this.x - 1;
+        }
+
+        public void moveRight() { // move it right
+            this.x = this.x + 1;
+        }
+
+        public void moveUp() { // move up
+            this.y = this.y - 1;
+        }
+
+        public void moveDown() { // move down
+            this.y = this.y + 1;
+            //  }
+
+            //  public int getY() { // retrives y value
+            //      return y;
+        }
+
+        public void setY(int y) { // sets current y value
+            this.y = y;
+        }
+
+    }
+
+    class Player extends Rectangle {
+
+        boolean right, left, up, down;
+        Image IV = new Image("file:src/RoboKnight.png");
+        Image[] Right = new Image[3];
+        int move = 0;
+        int score = 0;
+
+        public ImageView picture = new ImageView(IV);
+
+        public Player(double x, double y) {
+
+            super(x, y, 35, 60);
+            Right[1] = new Image("file:src/Right1.png");
+            Right[2] = new Image("file:src/Right2.png");
+            Right[0] = new Image("file:src/Right3.png");
+
+            this.picture.setX(this.getX());
+            this.picture.setX(this.getY());
+            this.picture.setFitHeight(90);
+            this.picture.setFitWidth(90);
+
+        }
+
+        void Stop() {
+//        this.setX(this.getX() - 5);
+//        this.setY(this.getY() - 5);
+
+        }
+
+        private boolean WallCheck(ArrayList<wall> a) {
+            boolean Wallhit = false;
+            for (wall w : a) {
+                if (this.getBoundsInParent().intersects(w.getBoundsInParent())) {
+                    Wallhit = true;
+                }
+            }
+            return Wallhit;
+
+        }
+
+        private boolean WallCheck2(ArrayList<wall2> a) {
+            boolean Wallhit2 = false;
+            for (wall2 b : a) {
+                if (room > 1) {
+                    if (this.getBoundsInParent().intersects(b.getBoundsInParent())) {
+                        Wallhit2 = true;
+                    }
+                }
+            }
+            return Wallhit2;
+
+        }
+
+        private boolean WallCheck3(ArrayList<wall3> a) {
+            boolean Wallhit3 = false;
+            for (wall3 b : a) {
+                if (room > 2) {
+                    if (this.getBoundsInParent().intersects(b.getBoundsInParent())) {
+                        Wallhit3 = true;
+                    }
+                }
+            }
+            return Wallhit3;
+
+        }
+
+        private boolean WallCheck4(ArrayList<wall4> a) {
+            boolean Wallhit4 = false;
+            for (wall4 b : a) {
+                if (room > 3) {
+                    if (this.getBoundsInParent().intersects(b.getBoundsInParent())) {
+                        Wallhit4 = true;
+                    }
+                }
+            }
+            return Wallhit4;
+
+        }
+
+        private boolean CoinCheck(ArrayList<Gold> a) {
+            boolean CoinCheck = false;
+            for (Gold g : a) {
+                if (this.getBoundsInParent().intersects(g.getBoundsInParent())) {
+                    CoinCheck = true;
+                }
+                if (CoinCheck) {
+                    System.out.println("HIT");
+                    g.setX(+10000);
+                    g.setFill(Color.TRANSPARENT);
+                    coins.remove(g);
+                    score++;
+                    System.out.println(score);
+
+                }
+            }
+            return CoinCheck;
+
+        }
+
+        void move() {
+        }
+
+        void moveUp() {
+
+            if (this.getY() > 5) { //
+                this.setY(this.getY() - 5);
+            } else {
+                this.setDown();
+            }
+
+            if (this.WallCheck(bricks)) {
+                this.setY(this.getY() + 5);
+            } else {
+                if (this.WallCheck2(bricks2)) {
+                    this.setY(this.getY() + 5);
+                } else {
+                    if (this.WallCheck3(bricks3)) {
+                        this.setY(this.getY() + 5);
+                    } else {
+                        if (this.WallCheck4(bricks4)) {
+                            this.setY(this.getY() + 5);
+                        } else {
+                            this.picture.setX(this.getX() - 26);
+                            this.picture.setY(this.getY() - 15);
+                        }
+                    }
+                }
+            }
+        }
+
+        void moveDown() {
+            if (this.getY() < 915) {
+                this.setY(this.getY() + 5);
+            } else {
+                this.setUp();
+                picture.setImage(IV);
+            }
+
+            if (this.WallCheck(bricks)) {
+                this.setY(this.getY() - 5);
+            } else {
+                if (this.WallCheck2(bricks2)) {
+                    this.setY(this.getY() - 5);
+                } else {
+                    if (this.WallCheck3(bricks3)) {
+                        this.setY(this.getY() - 5);
+                    } else {
+                        if (this.WallCheck4(bricks4)) {
+                            this.setY(this.getY() - 5);
+                        } else {
+
+                            this.picture.setX(this.getX() - 28);
+
+                            this.picture.setY(this.getY() - 15);
+                        }
+                        //  picture.setImage(IV);
+                    }
+                }
+            }
+        }
+
+        void moveLeft() {
+            if (this.getX() > 5) {
+                this.setX(this.getX() - 5);
+            } else {
+                this.setRight();
+            }
+            if (this.WallCheck(bricks)) {
+                this.setX(this.getX() + 5);
+            } else {
+                if (this.WallCheck2(bricks2)) {
+                    this.setX(this.getX() + 5);
+                } else {
+                    if (this.WallCheck3(bricks3)) {
+                        this.setX(this.getX() + 5);
+                    } else {
+                        if (this.WallCheck4(bricks4)) {
+                            this.setX(this.getX() + 5);
+                        } else {
+
+                        }
+                        this.picture.setX(this.getX() - 26);
+                        this.picture.setY(this.getY() - 15);
+                    }
+                }
+            }
+        }
+
+        void moveRight() {
+            move++;
+            move = move % 3;
+            this.picture.setImage(Right[move]);
+            if (this.getX() < 975) {
+                this.setX(this.getX() + 5);
+                this.setLeft();
+            }
+            if (this.WallCheck(bricks)) {
+                this.setX(this.getX() - 5);
+            } else {
+                if (this.WallCheck2(bricks2)) {
+                    this.setX(this.getX() - 5);
+                } else {
+                    if (this.WallCheck3(bricks3)) {
+                        this.setX(this.getX() - 5);
+                    } else {
+                        if (this.WallCheck4(bricks4)) {
+                            this.setX(this.getX() - 5);
+                        } else {
+
+                        }
+                        this.picture.setX(this.getX() - 23);
+                        this.picture.setY(this.getY() - 15);
+                    }
+                }
+            }
+        }
+
+        void setUp() {
+            this.up = true;
+            this.down = false;
+            this.left = false;
+            this.right = false;
+        }
+
+        private void setDown() {
+            this.up = false;
+            this.down = true;
+            this.left = false;
+            this.right = false;
+        }
+
+        private void setLeft() {
+            this.up = false;
+            this.down = false;
+            this.left = true;
+            this.right = false;
+        }
+
+        private void setRight() {
+            this.up = false;
+            this.down = false;
+            this.left = false;
+            this.right = true;
+        }
+
+        public int getScore() {
+            return score; // get my score
+        }
+
+        public void setScore(int score) {
+            this.score = score; // set my score
+        }
+
+        public Player(double width, double height, Paint fill) {
+            super(width, height, fill);
+        }
+
+        public Player(double x, double y, double width, double height) {
+            super(x, y, width, height);
+        }
+
+    }
+
+    class Enemy extends Rectangle {
+
+        public Detection spotted;
+
+        Image IV3 = new Image("file:src/bad.png");
+        int move = 0;
+        public ImageView photo = new ImageView(IV3);
+
+        Rectangle enemyrectangle;
+        boolean right, left, up, down;
+
+        public Enemy(int x, int y, int health) {
+            super(x, y);
+            spotted = new Detection(x, y, 300, 300);
+            spotted.setFill(Color.ORANGE);
+            spotted.setX(this.getX() - 100);
+            spotted.setY(this.getY() - 70);
+            this.photo.setFitHeight(80);
+            this.photo.setFitWidth(80);
+
+        }
+
+        private void Detected(Player knight) {
+            boolean isdetected = false;
+            //for ()
+            if (knight.getBoundsInParent().intersects(spotted.getBoundsInParent())) {
+                System.out.println("INTRUDER GET HIM");
+                isdetected = true;
+            }
+            if (isdetected) {
+                this.chase(knight);
+                oof.play();
+                System.out.println("The music is playing");
+            }
+        }
+
+        private boolean WallCheck(ArrayList<wall> a) {
+            boolean Wallhit = false;
+            for (wall w : a) {
+                if (this.getBoundsInParent().intersects(w.getBoundsInParent())) {
+                    Wallhit = true;
+                }
+            }
+            return Wallhit;
+
+        }
+
+        void moveUp() {
+
+            if (this.getY() > 5) { //
+                this.setY(this.getY() - 5);
+            } else {
+                if (this.WallCheck(bricks)) {
+                    this.setY(this.getY() + 5);
+                } else {
+                    this.setDown();
+                }
+            }
+            this.photo.setX(this.getX() - 25);
+            this.photo.setY(this.getY() - 5);
+            this.spotted.setX(this.getX() - 85);
+            this.spotted.setY(this.getY() - 100);
+        }
+
+        void moveDown() {
+            if (this.getY() < 990) {
+                this.setY(this.getY() + 5);
+            } else {
+                if (this.WallCheck(bricks)) {
+                    this.setY(this.getY() - 5);
+                } else {
+                    this.setUp();
+                    photo.setImage(IV3);
+                }
+            }
+            this.photo.setX(this.getX() - 25);
+            this.photo.setY(this.getY() - 13);
+            this.spotted.setX(this.getX() - 85);
+            this.spotted.setY(this.getY() - 100);
+            photo.setImage(IV3);
+        }
+
+        void moveLeft() {
+            if (this.getX() > 5) {
+                this.setX(this.getX() - 5);
+            } else {
+                if (this.WallCheck(bricks)) {
+                    this.setX(this.getX() + 5);
+                } else {
+                    this.setRight();
+                }
+            }
+            this.photo.setX(this.getX());
+            this.photo.setY(this.getY());
+            this.spotted.setX(this.getX() - 85);
+            this.spotted.setY(this.getY() - 100);
+        }
+
+        void moveRight() {
+
+            if (this.getX() < 595) {
+                this.setX(this.getX() + 5);
+            } else {
+                if (this.WallCheck(bricks)) {
+                    this.setX(this.getX() - 5);
+                } else {
+                    this.setLeft();
+                }
+            }
+
+            this.photo.setX(this.getX());
+            this.photo.setY(this.getY());
+            this.spotted.setX(this.getX() - 85);
+            this.spotted.setY(this.getY() - 100);
+        }
+
+        void setUp() {
+            this.up = true;
+            this.down = false;
+            this.left = false;
+            this.right = false;
+        }
+
+        private void setDown() {
+            this.up = false;
+            this.down = true;
+            this.left = false;
+            this.right = false;
+        }
+
+        private void setLeft() {
+            this.up = false;
+            this.down = false;
+            this.left = true;
+            this.right = false;
+        }
+
+        private void setRight() {
+            this.up = false;
+            this.down = false;
+            this.left = false;
+            this.right = true;
+        }
+
+        public void chase(Player p) {
+            boolean levels1 = true;
+            if (room > 1) {
+                levels1 = false;
+            }
+
+            if (levels1) {
+                if (p.getX() < this.getX()) {
+                    this.moveLeft();
+                    this.setX(this.getX() - 3);
+                }
+                if (p.getX() > this.getX()) {
+                    this.setX(this.getX() + 3);
+                }
+                if (p.getY() > this.getY()) {
+                    this.setY(this.getY() + 3);
+                    this.moveDown();
+                }
+                if (p.getY() < this.getY()) {
+                    this.moveUp();
+                    this.setY(this.getY() - 3);
+
+                }
+            }
+        }
+
+        public Enemy() {
+        }
+
+        public Enemy(double width, double height) {
+            super(width, height);
+        }
+
+        public Enemy(double width, double height, Paint fill) {
+            super(width, height, fill);
+        }
+
+        public Enemy(double x, double y, double width, double height) {
+            super(x, y, width, height);
+            spotted = new Detection(x, y, 300, 300);
+        }
+
+    }
+
+    class Enemy2 extends Rectangle {
+
+        public Detection2 spotted2;
+
+        //Image IV3 = new Image("file:src/bad.png");
+        int move = 0;
+        int health;
+        // public ImageView photo = new ImageView(IV3);
+
+        Rectangle enemyrectangle;
+        boolean right, left, up, down;
+
+        public Enemy2(int x, int y, int health) {
+            super(x, y);
+            this.health = health;
+            spotted2 = new Detection2(x, y, 300, 300);
+            spotted2.setFill(Color.ORANGE);
+            spotted.setOpacity(100);
+            spotted2.setX(this.getX() - 126);
+            spotted2.setY(this.getY() - 70);
+            // this.photo.setFitHeight(80);
+            // this.photo.setFitWidth(80);
+
+        }
+
+        private void DetectedB(Player knight) {
+            boolean isdetected2 = false;
+
+            System.out.println("spotted x " + spotted2.getX());
+            System.out.println("spotted y " + spotted2.getY());
+
+            if (knight.getBoundsInParent().intersects(spotted2.getBoundsInParent())) {
+                System.out.println("INTRUDER GET HIM");
+                isdetected2 = true;
+            }
+            if (isdetected2) {
+                this.chase(knight);
+                oof.play();
+                System.out.println("The music is playing");
+            }
+        }
+
+       private boolean WallCheck(ArrayList<wall> a) {
+            boolean Wallhit = false;
+            for (wall w : a) {
+                if (this.getBoundsInParent().intersects(w.getBoundsInParent())) {
+                    Wallhit = true;
+                }
+            }
+            return Wallhit;
+
+        }
+
+        private boolean WallCheck2(ArrayList<wall2> a) {
+            boolean Wallhit2 = false;
+            for (wall2 b : a) {
+                if (room > 1) {
+                    if (this.getBoundsInParent().intersects(b.getBoundsInParent())) {
+                        Wallhit2 = true;
+                    }
+                }
+            }
+            return Wallhit2;
+
+        }
+
+        private boolean WallCheck3(ArrayList<wall3> a) {
+            boolean Wallhit3 = false;
+            for (wall3 b : a) {
+                if (room > 2) {
+                    if (this.getBoundsInParent().intersects(b.getBoundsInParent())) {
+                        Wallhit3 = true;
+                    }
+                }
+            }
+            return Wallhit3;
+
+        }
+
+        private boolean WallCheck4(ArrayList<wall4> a) {
+            boolean Wallhit4 = false;
+            for (wall4 b : a) {
+                if (room > 3) {
+                    if (this.getBoundsInParent().intersects(b.getBoundsInParent())) {
+                        Wallhit4 = true;
+                    }
+                }
+            }
+            return Wallhit4;
+
+        }
+    
+        
+
+        void moveUp() {
+
+            if (this.getY() > 5) { //
+                this.setY(this.getY() - 5);
+            } else {
+                if (this.WallCheck(bricks)) {
+                    this.setY(this.getY() + 5);
+                } else {
+                    this.setDown();
+                }
+            }
+            //  this.photo.setX(this.getX() - 25);
+            //  this.photo.setY(this.getY() - 5);
+            this.spotted2.setX(this.getX() - 105);
+            this.spotted2.setY(this.getY() - 126);
+        }
+
+        void moveDown() {
+            if (this.getY() < 990) {
+                this.setY(this.getY() + 5);
+            } else {
+                if (this.WallCheck(bricks)) {
+                    this.setY(this.getY() - 5);
+                } else {
+                    this.setUp();
+                    //     photo.setImage(IV3);
+                }
+            }
+            //   this.photo.setX(this.getX() - 25);
+            //   this.photo.setY(this.getY() - 13);
+            this.spotted2.setX(this.getX() - 105);
+            this.spotted2.setY(this.getY() - 126);
+            //  photo.setImage(IV3);
+        }
+
+        void moveLeft() {
+            if (this.getX() > 5) {
+                this.setX(this.getX() - 5);
+            } else {
+                if (this.WallCheck(bricks)) {
+                    this.setX(this.getX() + 5);
+                } else {
+                    this.setRight();
+                }
+            }
+            // this.photo.setX(this.getX());
+            //  this.photo.setY(this.getY());
+            this.spotted2.setX(this.getX() - 105);
+            this.spotted2.setY(this.getY() - 126);
+        }
+
+        void moveRight() {
+
+            if (this.getX() < 595) {
+                this.setX(this.getX() + 5);
+            } else {
+                if (this.WallCheck(bricks)) {
+                    this.setX(this.getX() - 5);
+                } else {
+                    this.setLeft();
+                }
+            }
+
+            //   this.photo.setX(this.getX());
+            //   this.photo.setY(this.getY());
+            this.spotted2.setX(this.getX() - 105);
+            this.spotted2.setY(this.getY() - 126);
+        }
+
+        void setUp() {
+            this.up = true;
+            this.down = false;
+            this.left = false;
+            this.right = false;
+        }
+
+        private void setDown() {
+            this.up = false;
+            this.down = true;
+            this.left = false;
+            this.right = false;
+        }
+
+        private void setLeft() {
+            this.up = false;
+            this.down = false;
+            this.left = true;
+            this.right = false;
+        }
+
+        private void setRight() {
+            this.up = false;
+            this.down = false;
+            this.left = false;
+            this.right = true;
+        }
+
+        public void chase(Player p) {
+            boolean levels2 = true;
+            if (room > 2) {
+                levels2 = false;
+            }
+
+            if (levels2) {
+                if (p.getX() < this.getX()) {
+                    this.moveLeft();
+                    this.setX(this.getX() - 3);
+                }
+                if (p.getX() > this.getX()) {
+                    this.setX(this.getX() + 3);
+                }
+                if (p.getY() > this.getY()) {
+                    this.setY(this.getY() + 3);
+                    this.moveDown();
+                }
+                if (p.getY() < this.getY()) {
+                    this.moveUp();
+                    this.setY(this.getY() - 3);
+
+                }
+            }
+        }
+
+        public Enemy2() {
+        }
+
+        public Enemy2(double width, double height) {
+            super(width, height);
+        }
+
+        public Enemy2(double width, double height, Paint fill) {
+            super(width, height, fill);
+        }
+
+        public Enemy2(double x, double y, double width, double height) {
+            super(x, y, width, height);
+            spotted2 = new Detection2(x, y, 300, 300);
+            spotted2.setFill(Color.AQUA);
+        }
+
+    }
+
+    class Enemy3 extends Rectangle {
+
+        public Detection3 spotted3;
+
+        //Image IV3 = new Image("file:src/bad.png");
+        int move = 0;
+        int health;
+        // public ImageView photo = new ImageView(IV3);
+
+        Rectangle enemyrectangle;
+        boolean right, left, up, down;
+
+        public Enemy3(int x, int y, int health) {
+            super(x, y);
+            this.health = health;
+            spotted3 = new Detection3(x, y, 300, 300);
+            spotted3.setFill(Color.ORANGE);
+            spotted3.setOpacity(100);
+            spotted3.setX(this.getX() - 100);
+            spotted3.setY(this.getY() - 70);
+            // this.photo.setFitHeight(80);
+            // this.photo.setFitWidth(80);
+
+        }
+
+        private void DetectedC(Player knight) {
+            boolean isdetected3 = false;
+
+            System.out.println("spotted x " + spotted3.getX());
+            System.out.println("spotted y " + spotted3.getY());
+
+            if (knight.getBoundsInParent().intersects(spotted3.getBoundsInParent())) {
+                System.out.println("INTRUDER GET HIM");
+                isdetected3 = true;
+            }
+            if (isdetected3) {
+                this.chase(knight);
+                oof.play();
+                System.out.println("The music is playing");
+            }
+        }
+
+         private boolean WallCheck(ArrayList<wall> a) {
+            boolean Wallhit = false;
+            for (wall w : a) {
+                if (this.getBoundsInParent().intersects(w.getBoundsInParent())) {
+                    Wallhit = true;
+                }
+            }
+            return Wallhit;
+
+        }
+
+        private boolean WallCheck2(ArrayList<wall2> a) {
+            boolean Wallhit2 = false;
+            for (wall2 b : a) {
+                if (room > 1) {
+                    if (this.getBoundsInParent().intersects(b.getBoundsInParent())) {
+                        Wallhit2 = true;
+                    }
+                }
+            }
+            return Wallhit2;
+
+        }
+
+        private boolean WallCheck3(ArrayList<wall3> a) {
+            boolean Wallhit3 = false;
+            for (wall3 b : a) {
+                if (room > 2) {
+                    if (this.getBoundsInParent().intersects(b.getBoundsInParent())) {
+                        Wallhit3 = true;
+                    }
+                }
+            }
+            return Wallhit3;
+
+        }
+
+        private boolean WallCheck4(ArrayList<wall4> a) {
+            boolean Wallhit4 = false;
+            for (wall4 b : a) {
+                if (room > 3) {
+                    if (this.getBoundsInParent().intersects(b.getBoundsInParent())) {
+                        Wallhit4 = true;
+                    }
+                }
+            }
+            return Wallhit4;
+
+        }
+
+        
+
+        void moveUp() {
+
+            if (this.getY() > 5) { //
+                this.setY(this.getY() - 5);
+            } else {
+                if (this.WallCheck(bricks)) {
+                    this.setY(this.getY() + 5);
+                } else {
+                    this.setDown();
+                }
+            }
+            //  this.photo.setX(this.getX() - 25);
+            //  this.photo.setY(this.getY() - 5);
+            this.spotted3.setX(this.getX() - 105);
+            this.spotted3.setY(this.getY() - 126);
+        }
+
+        void moveDown() {
+            if (this.getY() < 990) {
+                this.setY(this.getY() + 5);
+            } else {
+                if (this.WallCheck(bricks)) {
+                    this.setY(this.getY() - 5);
+                } else {
+                    this.setUp();
+                    //     photo.setImage(IV3);
+                }
+            }
+            //   this.photo.setX(this.getX() - 25);
+            //   this.photo.setY(this.getY() - 13);
+            this.spotted3.setX(this.getX() - 105);
+            this.spotted3.setY(this.getY() - 126);
+            //  photo.setImage(IV3);
+        }
+
+        void moveLeft() {
+            if (this.getX() > 5) {
+                this.setX(this.getX() - 5);
+            } else {
+                if (this.WallCheck(bricks)) {
+                    this.setX(this.getX() + 5);
+                } else {
+                    this.setRight();
+                }
+            }
+            // this.photo.setX(this.getX());
+            //  this.photo.setY(this.getY());
+            this.spotted3.setX(this.getX() - 105);
+            this.spotted3.setY(this.getY() - 126);
+        }
+
+        void moveRight() {
+
+            if (this.getX() < 595) {
+                this.setX(this.getX() + 5);
+            } else {
+                if (this.WallCheck(bricks)) {
+                    this.setX(this.getX() - 5);
+                } else {
+                    this.setLeft();
+                }
+            }
+
+            //   this.photo.setX(this.getX());
+            //   this.photo.setY(this.getY());
+            this.spotted3.setX(this.getX() - 105);
+            this.spotted3.setY(this.getY() - 126);
+        }
+
+        void setUp() {
+            this.up = true;
+            this.down = false;
+            this.left = false;
+            this.right = false;
+        }
+
+        private void setDown() {
+            this.up = false;
+            this.down = true;
+            this.left = false;
+            this.right = false;
+        }
+
+        private void setLeft() {
+            this.up = false;
+            this.down = false;
+            this.left = true;
+            this.right = false;
+        }
+
+        private void setRight() {
+            this.up = false;
+            this.down = false;
+            this.left = false;
+            this.right = true;
+        }
+
+        public void chase(Player p) {
+            boolean levels3 = true;
+            if (room > 3) {
+                levels3 = false;
+            }
+
+            if (levels3) {
+                if (p.getX() < this.getX()) {
+                    this.moveLeft();
+                    this.setX(this.getX() - 3);
+                }
+                if (p.getX() > this.getX()) {
+                    this.setX(this.getX() + 3);
+                }
+                if (p.getY() > this.getY()) {
+                    this.setY(this.getY() + 3);
+                    this.moveDown();
+                }
+                if (p.getY() < this.getY()) {
+                    this.moveUp();
+                    this.setY(this.getY() - 3);
+
+                }
+            }
+        }
+
+        public Enemy3() {
+        }
+
+        public Enemy3(double width, double height) {
+            super(width, height);
+        }
+
+        public Enemy3(double width, double height, Paint fill) {
+            super(width, height, fill);
+        }
+
+        public Enemy3(double x, double y, double width, double height) {
+            super(x, y, width, height);
+            spotted3 = new Detection3(x, y, 300, 300);
+            spotted3.setFill(Color.AQUA);
+        }
+
+    }
+
+    class Enemy4 extends Rectangle {
+
+        public Detection4 spotted4;
+
+        //Image IV3 = new Image("file:src/bad.png");
+        int move = 0;
+        int health;
+        // public ImageView photo = new ImageView(IV3);
+
+        Rectangle enemyrectangle;
+        boolean right, left, up, down;
+
+        public Enemy4(int x, int y, int health) {
+            super(x, y);
+            this.health = health;
+            spotted4 = new Detection4(x, y, 300, 300);
+            spotted4.setFill(Color.ORANGE);
+            spotted4.setOpacity(100);
+            spotted4.setX(this.getX() - 105);
+            spotted4.setY(this.getY() - 126);
+            // this.photo.setFitHeight(80);
+            // this.photo.setFitWidth(80);
+
+        }
+
+        private void DetectedD(Player knight) {
+            boolean isdetected4 = false;
+
+            System.out.println("spotted x " + spotted4.getX());
+            System.out.println("spotted y " + spotted4.getY());
+
+            if (knight.getBoundsInParent().intersects(spotted4.getBoundsInParent())) {
+                System.out.println("INTRUDER GET HIM");
+                isdetected4 = true;
+            }
+            if (isdetected4) {
+                this.chase(knight);
+                oof.play();
+                System.out.println("The music is playing");
+            }
+        }
+
+      private boolean WallCheck(ArrayList<wall> a) {
+            boolean Wallhit = false;
+            for (wall w : a) {
+                if (this.getBoundsInParent().intersects(w.getBoundsInParent())) {
+                    Wallhit = true;
+                }
+            }
+            return Wallhit;
+
+        }
+
+        private boolean WallCheck2(ArrayList<wall2> a) {
+            boolean Wallhit2 = false;
+            for (wall2 b : a) {
+                if (room > 1) {
+                    if (this.getBoundsInParent().intersects(b.getBoundsInParent())) {
+                        Wallhit2 = true;
+                    }
+                }
+            }
+            return Wallhit2;
+
+        }
+
+        private boolean WallCheck3(ArrayList<wall3> a) {
+            boolean Wallhit3 = false;
+            for (wall3 b : a) {
+                if (room > 2) {
+                    if (this.getBoundsInParent().intersects(b.getBoundsInParent())) {
+                        Wallhit3 = true;
+                    }
+                }
+            }
+            return Wallhit3;
+
+        }
+
+        private boolean WallCheck4(ArrayList<wall4> a) {
+            boolean Wallhit4 = false;
+            for (wall4 b : a) {
+                if (room > 3) {
+                    if (this.getBoundsInParent().intersects(b.getBoundsInParent())) {
+                        Wallhit4 = true;
+                    }
+                }
+            }
+            return Wallhit4;
+
+        }
+
+        void moveUp() {
+
+            if (this.getY() > 5) { //
+                this.setY(this.getY() - 5);
+            } else {
+                if (this.WallCheck(bricks)) {
+                    this.setY(this.getY() + 5);
+                } else {
+                    this.setDown();
+                }
+            }
+            //  this.photo.setX(this.getX() - 25);
+            //  this.photo.setY(this.getY() - 5);
+            this.spotted4.setX(this.getX() - 105);
+            this.spotted4.setY(this.getY() - 126);
+        }
+
+        void moveDown() {
+            if (this.getY() < 990) {
+                this.setY(this.getY() + 5);
+            } else {
+                if (this.WallCheck(bricks)) {
+                    this.setY(this.getY() - 5);
+                } else {
+                    this.setUp();
+                    //     photo.setImage(IV3);
+                }
+            }
+            //   this.photo.setX(this.getX() - 25);
+            //   this.photo.setY(this.getY() - 13);
+            this.spotted4.setX(this.getX() - 105);
+            this.spotted4.setY(this.getY() - 126);
+            //  photo.setImage(IV3);
+        }
+
+        void moveLeft() {
+            if (this.getX() > 5) {
+                this.setX(this.getX() - 5);
+            } else {
+                if (this.WallCheck(bricks)) {
+                    this.setX(this.getX() + 5);
+                } else {
+                    this.setRight();
+                }
+            }
+            // this.photo.setX(this.getX());
+            //  this.photo.setY(this.getY());
+            this.spotted4.setX(this.getX() - 105);
+            this.spotted4.setY(this.getY() - 126);
+        }
+
+        void moveRight() {
+
+            if (this.getX() < 595) {
+                this.setX(this.getX() + 5);
+            } else {
+                if (this.WallCheck(bricks)) {
+                    this.setX(this.getX() - 5);
+                } else {
+                    this.setLeft();
+                }
+            }
+
+            //   this.photo.setX(this.getX());
+            //   this.photo.setY(this.getY());
+            this.spotted4.setX(this.getX() - 105);
+            this.spotted4.setY(this.getY() - 126);
+        }
+
+        void setUp() {
+            this.up = true;
+            this.down = false;
+            this.left = false;
+            this.right = false;
+        }
+
+        private void setDown() {
+            this.up = false;
+            this.down = true;
+            this.left = false;
+            this.right = false;
+        }
+
+        private void setLeft() {
+            this.up = false;
+            this.down = false;
+            this.left = true;
+            this.right = false;
+        }
+
+        private void setRight() {
+            this.up = false;
+            this.down = false;
+            this.left = false;
+            this.right = true;
+        }
+
+        public void chase(Player p) {
+            boolean levels4 = true;
+            if (room > 4) {
+                levels4 = false;
+            }
+
+            if (levels4) {
+                if (p.getX() < this.getX()) {
+                    this.moveLeft();
+                    this.setX(this.getX() - 3);
+                }
+                if (p.getX() > this.getX()) {
+                    this.setX(this.getX() + 3);
+                }
+                if (p.getY() > this.getY()) {
+                    this.setY(this.getY() + 3);
+                    this.moveDown();
+                }
+                if (p.getY() < this.getY()) {
+                    this.moveUp();
+                    this.setY(this.getY() - 3);
+
+                }
+            }
+        }
+
+        public Enemy4() {
+        }
+
+        public Enemy4(double width, double height) {
+            super(width, height);
+        }
+
+        public Enemy4(double width, double height, Paint fill) {
+            super(width, height, fill);
+        }
+
+        public Enemy4(double x, double y, double width, double height) {
+            super(x, y, width, height);
+            spotted4 = new Detection4(x, y, 300, 300);
+            spotted4.setFill(Color.AQUA);
+        }
+
+    }
+
+    class Sword extends Rectangle {
+
+        Image SD = new Image("file:src/SwordDown.png");
+        Image SU = new Image("file:src/SwordUp.png");
+        Image SL = new Image("file:src/SwordLeft.png");
+        Image SR = new Image("file:src/SwordRight.png");
+
+        public ImageView Pics = new ImageView(SD);
+        // this.Pics.setFitHeight(90);
+        // this.Pics.setFitWidth(90);
+
+        public Sword() {
+        }
+
+        public Sword(double width, double height) {
+            super(width, height);
+        }
+
+        public Sword(double width, double height, Paint fill) {
+            super(width, height, fill);
+        }
+
+        public Sword(double x, double y, double width, double height) {
+            super(x, y, width, height);
+        }
+
+        public void BladeRight(Player knight) {
+            this.setX(knight.getX() + 55);
+            this.setY(knight.getY() + 10);
+
+            this.Pics.setX(this.getX());
+            this.Pics.setY(this.getY());
+            Pics.setImage(SR);
+
+        }
+
+        public void BladeLeft(Player knight) {
+            this.setX(knight.getX() - 37);
+            this.setY(knight.getY() + 10);
+            this.Pics.setX(this.getX());
+            this.Pics.setY(this.getY());
+            Pics.setImage(SL);
+
+        }
+
+        public void BladeDown(Player knight) {
+            this.setX(knight.getX() + 10);
+            this.setY(knight.getY() + 80);
+            this.Pics.setX(this.getX());
+            this.Pics.setY(this.getY());
+            Pics.setImage(SD);
+
+        }
+
+        public void BladeUp(Player knight) {
+            this.setX(knight.getX() + 10);
+            this.setY(knight.getY() - 48);
+            this.Pics.setX(this.getX());
+            this.Pics.setY(this.getY());
+            Pics.setImage(SU);
+
+        }
+
+    }
+}
+
+class Gold extends Rectangle {
+
+    Image CP = new Image("file:src/coin.png");
+    public ImageView cpicture = new ImageView(CP);
+
+    boolean right, left, up, down;
+
+    public Gold() {
+    }
+
+    public Gold(double width, double height) {
+        super(width, height);
+        this.cpicture.setX(this.getX());
+        this.cpicture.setY(this.getY());
+    }
+
+    public Gold(double width, double height, Paint fill) {
+        super(width, height, fill);
+    }
+
+    public Gold(double x, double y, double width, double height) {
+        super(x, y, width, height);
+    }
+
+}
+
+class Detection extends Rectangle {
+
+    public Detection() {
+    }
+
+    public Detection(double width, double height) {
+        super(width, height);
+    }
+
+    public Detection(double width, double height, Paint fill) {
+        super(width, height, fill);
+    }
+
+    public Detection(double x, double y, double width, double height) { //DETECTION -------------------------------------------------------------------
+        super(x, y, width, height);
+    }
+
+    public void follow(Enemy s) {
+        this.setX(s.getX() - 100);
+        this.setY(s.getY() - 100);
+    }
+}
+
+class Detection2 extends Rectangle {
+
+    public Detection2() {
+    }
+
+    public Detection2(double width, double height) {
+        super(width, height);
+    }
+
+    public Detection2(double width, double height, Paint fill) {
+        super(width, height, fill);
+    }
+
+    public Detection2(double x, double y, double width, double height) { //DETECTION -------------------------------------------------------------------
+        super(x, y, width, height);
+    }
+
+    public void follow(Enemy s) {
+        this.setX(s.getX() - 100);
+        this.setY(s.getY() - 100);
+    }
+}
+
+class Detection3 extends Rectangle {
+
+    public Detection3() {
+    }
+
+    public Detection3(double width, double height) {
+        super(width, height);
+    }
+
+    public Detection3(double width, double height, Paint fill) {
+        super(width, height, fill);
+    }
+
+    public Detection3(double x, double y, double width, double height) { //DETECTION -------------------------------------------------------------------
+        super(x, y, width, height);
+    }
+
+    public void follow(Enemy s) {
+        this.setX(s.getX() - 100);
+        this.setY(s.getY() - 100);
+    }
+}
+
+class Detection4 extends Rectangle {
+
+    public Detection4() {
+    }
+
+    public Detection4(double width, double height) {
+        super(width, height);
+    }
+
+    public Detection4(double width, double height, Paint fill) {
+        super(width, height, fill);
+    }
+
+    public Detection4(double x, double y, double width, double height) { //DETECTION -------------------------------------------------------------------
+        super(x, y, width, height);
+    }
+
+    public void follow(Enemy s) {
+        this.setX(s.getX() - 100);
+        this.setY(s.getY() - 100);
+    }
+}
+
+class wall extends Rectangle {
+
+    public wall() {
+    }
+
+    public wall(double width, double height) {
+        super(width, height);
+    }
+
+    public wall(double width, double height, Paint fill) {
+        super(width, height, fill);
+    }
+
+    public wall(double x, double y, double width, double height) {
+        super(x, y, width, height);
+    }
+
+    wall(double x, double y, double width, double height, Color CHARTREUSE) {
+        super(x, y, width, height);
+        this.setFill(CHARTREUSE);
+
+    }
+
+}
+
+class TESTING extends Rectangle {
+
+    public TESTING() {
+    }
+
+    public TESTING(double width, double height) {
+        super(width, height);
+    }
+
+    public TESTING(double width, double height, Paint fill) {
+        super(width, height, fill);
+    }
+
+    public TESTING(double x, double y, double width, double height) {
+        super(x, y, width, height);
+    }
+
+}
+
+class wall2 extends Rectangle {
+
+    public wall2() {
+    }
+
+    public wall2(double width, double height) {
+        super(width, height);
+    }
+
+    public wall2(double width, double height, Paint fill) {
+        super(width, height, fill);
+    }
+
+    public wall2(double x, double y, double width, double height) {
+        super(x, y, width, height);
+    }
+
+    wall2(double x, double y, double width, double height, Color CHARTREUSE) {
+        super(x, y, width, height);
+        this.setFill(CHARTREUSE);
+
+    }
+
+}
+
+class DartTrap extends Rectangle {
+
+    public DartTrap() {
+    }
+
+    public DartTrap(double width, double height) {
+        super(width, height);
+    }
+
+    public DartTrap(double width, double height, Paint fill) {
+        super(width, height, fill);
+    }
+
+    public DartTrap(double x, double y, double width, double height) {
+        super(x, y, width, height);
+    }
+
+}
+
+class Dart extends Rectangle {
+
+    int moved = 0;
+
+    public Dart() {
+    }
+
+    public Dart(double width, double height) {
+        super(width, height);
+    }
+
+    public Dart(double width, double height, Paint fill) {
+        super(width, height, fill);
+    }
+
+    public Dart(double x, double y, double width, double height) {
+        super(x, y, width, height);
+    }
+    //-------------------------------------------------------------------------------------------- DART Move
+
+    public void DartDown() {
+        System.out.println("darting down ");
+        this.moved++;
+        this.setY(this.getY() + 3);
+        for (int i = 0; i < 10; i++) {
+            this.setY(this.getY() + 3);
+        }
+    }
+
+}
+
+class Testing2 extends Rectangle {
+
+    public Testing2() {
+    }
+
+    public Testing2(double width, double height) {
+        super(width, height);
+    }
+
+    public Testing2(double width, double height, Paint fill) {
+        super(width, height, fill);
+    }
+
+    public Testing2(double x, double y, double width, double height) {
+        super(x, y, width, height);
+    }
+
+}
+
+class wall3 extends Rectangle {
+
+    public wall3() {
+    }
+
+    public wall3(double width, double height) {
+        super(width, height);
+    }
+
+    public wall3(double width, double height, Paint fill) {
+        super(width, height, fill);
+    }
+
+    public wall3(double x, double y, double width, double height) {
+        super(x, y, width, height);
+    }
+
+    wall3(double x, double y, double width, double height, Color CHARTREUSE) {
+        super(x, y, width, height);
+        this.setFill(CHARTREUSE);
+
+    }
+
+}
+//-------------------------------------------------------------------------------------------- DART Move
+
+class Testing3 extends Rectangle {
+
+    public Testing3() {
+    }
+
+    public Testing3(double width, double height) {
+        super(width, height);
+    }
+
+    public Testing3(double width, double height, Paint fill) {
+        super(width, height, fill);
+    }
+
+    public Testing3(double x, double y, double width, double height) {
+        super(x, y, width, height);
+    }
+}
+
+class wall4 extends Rectangle {
+
+    public wall4() {
+    }
+
+    public wall4(double width, double height) {
+        super(width, height);
+    }
+
+    public wall4(double width, double height, Paint fill) {
+        super(width, height, fill);
+    }
+
+    public wall4(double x, double y, double width, double height) {
+        super(x, y, width, height);
+    }
+
+    wall4(double x, double y, double width, double height, Color CHARTREUSE) {
+        super(x, y, width, height);
+        this.setFill(CHARTREUSE);
+
+    }
+
+}
